@@ -28,7 +28,6 @@ type Model struct {
 type Field struct {
 	ColName      string
 	IsPrimaryKey bool
-	OfWhere      bool
 	GoName       string
 }
 

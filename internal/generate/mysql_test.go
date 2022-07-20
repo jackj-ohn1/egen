@@ -49,10 +49,10 @@ func TestMySQLGenerator_Generate(t *testing.T) {
 				TableName: "user",
 				GoName:    "User",
 				Fields: []model.Field{
-					{ColName: "login_time", IsPrimaryKey: false, GoName: "LoginTime"},
-					{ColName: "first_name", IsPrimaryKey: false, GoName: "FirstName"},
-					{ColName: "last_name", IsPrimaryKey: false, GoName: "LastName"},
-					{ColName: "user_id", IsPrimaryKey: true, GoName: "UserId"},
+					{ColName: "login_time", GoName: "LoginTime"},
+					{ColName: "first_name", GoName: "FirstName"},
+					{ColName: "last_name", GoName: "LastName"},
+					{ColName: "user_id", GoName: "UserId", IsPrimaryKey: true},
 				},
 			},
 			wantErr:  nil,
@@ -64,9 +64,9 @@ func TestMySQLGenerator_Generate(t *testing.T) {
 				TableName: "order",
 				GoName:    "Order",
 				Fields: []model.Field{
-					{ColName: "order_time", IsPrimaryKey: false, GoName: "OrderTime"},
-					{ColName: "order_id", IsPrimaryKey: false, GoName: "OrderId"},
-					{ColName: "user_id", IsPrimaryKey: true, GoName: "UserId"},
+					{ColName: "order_time", GoName: "OrderTime"},
+					{ColName: "order_id", GoName: "OrderId"},
+					{ColName: "user_id", GoName: "UserId", IsPrimaryKey: true},
 				},
 			},
 			wantErr:  nil,
@@ -79,16 +79,11 @@ func TestMySQLGenerator_Generate(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			data, err := os.ReadFile(testCase.testdata)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.Equal(t, nil, err)
 			testCase.wantCode = string(data)
 			w := &bytes.Buffer{}
 			err = mg.Generate(testCase.model, w)
 			assert.Equal(t, testCase.wantErr, err)
-			if err != nil {
-				t.Fatal(err)
-			}
 			assert.Equal(t, w.String(), testCase.wantCode)
 		})
 	}
